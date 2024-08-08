@@ -45,33 +45,6 @@ print('蒙特卡罗法估计的目标函数的最小值:', obj_fun_min)
 
 
 # 数学求解
-""" 
-minimize函数method参数：
-一、无约束问题
-    （1）不需要梯度信息
-        1. 'Nelder-Mead'（也称为单纯形法）:一种启发式算法。
-        2. 'Powell':一种共轭方向方法。
-    （2）需要目标函数的一阶导数
-        1. 'CG'（共轭梯度法）。
-        2. 'BFGS':BFGS方法是一种拟牛顿方法。
-    （3）需要目标函数的二阶导数
-        1. 'trust-exact':信赖域精确线性编程。
-        2. 'Newton-CG':牛顿共轭梯度法。
-        3. 'dogleg':对偶单纯形法。
-        4. 'trust-ncg':信赖域牛顿法。
-        5. 'trust-krylov': 信赖域Krylov方法。
-二、有边界约束问题
-    （1）需要目标函数的一阶导数
-        1. 'TNC':Truncated Newton（截断牛顿）算法。
-        2. 'L-BFGS-B':限制内存的BFGS方法。
-三、有边界和不等式约束的问题
-    （1）不需要梯度信息
-        1. 'COBYLA':约束优化方法。
-四、有边界和等式/不等式约束的问题
-    （1）需要目标函数的一阶导数
-        1. 'SLSQP':序列二次规划方法。
-        2. 'trust-constr':信赖域约束优化方法。
-"""
 res = minimize(obj_fun, x_min, method = 'L-BFGS-B', bounds = bounds, constraints = cons)
 if res.success:
     print('数学求解的最优解:', res.x)  # 最优解
