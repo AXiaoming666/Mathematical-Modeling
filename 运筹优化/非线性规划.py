@@ -13,7 +13,7 @@ bounds = ((0, 2), (0, None), (0, None))    # 变量的上下界,由等式约束�
 
 
 # 蒙特卡罗法估计最优解
-N = 100000    # 蒙特卡罗模拟次数
+N = 1000    # 蒙特卡罗模拟次数
 n = len(bounds)    # 变量个数
 x_min = np.zeros(n)    # 最优解
 obj_fun_min = np.inf    # 目标函数的最小值
@@ -64,14 +64,15 @@ minimize函数method参数：
     （1）需要目标函数的一阶导数
         1. 'TNC':Truncated Newton（截断牛顿）算法。
         2. 'L-BFGS-B':限制内存的BFGS方法。
-三、有边界和等式/不等式约束的问题
+三、有边界和不等式约束的问题
     （1）不需要梯度信息
         1. 'COBYLA':约束优化方法。
-    （2）需要目标函数的一阶导数
+四、有边界和等式/不等式约束的问题
+    （1）需要目标函数的一阶导数
         1. 'SLSQP':序列二次规划方法。
         2. 'trust-constr':信赖域约束优化方法。
 """
-res = minimize(obj_fun, x_min, method = 'trust-constr', bounds = bounds, constraints = cons)
+res = minimize(obj_fun, x_min, method = 'L-BFGS-B', bounds = bounds, constraints = cons)
 if res.success:
     print('数学求解的最优解:', res.x)  # 最优解
     print('数学求解的目标函数的最小值:', res.fun)  # 目标函数的最小值
