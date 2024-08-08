@@ -8,10 +8,10 @@ from scipy.optimize import minimize
 # 目标函数(主意要消除量纲影响)
 obj_fun1 = lambda x: 4*x[0] + 10*x[1]
 obj_fun2 = lambda x: 12*x[0] + 9*x[1]
-cons = ({'type': 'ineq', 'fun': lambda x: x[0] + x[1] - 7})    # 约束条件
+cons = ({'type': 'ineq', 'fun': lambda x: x[0] + x[1] - 7},)    # 约束条件
 bounds = ((0, 5), (0, 6))    # 变量取值范围
 span = (0, 1)    # 权重范围
-step = 0.1    # 步长
+step = 0.001    # 步长
 
 
 # 定义线性加权法函数
@@ -49,9 +49,23 @@ for w in np.arange(span[0], span[1], step):
     
 
     # 数学求解
-    res = minimize(obj_fun, x_min, method = 'L-BFGS-B', bounds = bounds, constraints = cons)
+    res = minimize(obj_fun, x_min, method = 'SLSQP', bounds = bounds, constraints = cons)
     if res.success:
-        print('数学求解的最优解:', res.x)  # 最优解
-        print('数学求解的目标函数的最小值:', res.fun)  # 目标函数的最小值
-    else:
-        print('数学求解失败！')
+        # 绘图
+        # 权值w对目标函数的影响
+        plt.subplot(1, 2, 1)
+        plt.scatter(w, obj_fun1(res.x), c = 'r', label = 'obj_fun1')
+        plt.scatter(w, obj_fun2(res.x), c = 'b', label = 'obj_fun2')
+        plt.title('权值w对目标函数的影响')
+        plt.xlabel('权值w')
+        plt.ylabel('目标函数值')
+        # 权值w对最优解的影响
+        plt.subplot(1, 2, 2)
+        plt.scatter(w, res.x[0], c = 'r', label = 'x1')
+        plt.scatter(w, res.x[1], c = 'b', label = 'x2')
+        plt.title('权值w对最优解的影响')
+        plt.xlabel('权值w')
+        plt.ylabel('最优解')
+
+
+plt.show()
