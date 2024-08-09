@@ -4,6 +4,11 @@ import math
 from scipy.optimize import minimize
 
 
+# 修改matplotlib中字体，解决中文显示问题
+plt.rcParams['font.sans-serif'] = ['SimHei']
+plt.rcParams['axes.unicode_minus'] = False
+
+
 # 定义基本数据
 # 目标函数(主意要消除量纲影响)
 obj_fun1 = lambda x: 4*x[0] + 10*x[1]
@@ -11,7 +16,7 @@ obj_fun2 = lambda x: 12*x[0] + 9*x[1]
 cons = ({'type': 'ineq', 'fun': lambda x: x[0] + x[1] - 7},)    # 约束条件
 bounds = ((0, 5), (0, 6))    # 变量取值范围
 span = (0, 1)    # 权重范围
-step = 0.001    # 步长
+step = 0.01    # 步长
 
 
 # 定义线性加权法函数
