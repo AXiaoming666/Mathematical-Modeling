@@ -19,9 +19,9 @@ class Floyd:
 
 
     # 打印路径
-    def print_path(self, i, j):
+    def __print_path(self, i, j):
         if i != j:
-            self.print_path(i, self.parents[i][j])
+            self.__print_path(i, self.parents[i][j])
         print(j, end='-->')
 
     # 输出最短路径矩阵
@@ -36,7 +36,7 @@ class Floyd:
     def print_shortest_path(self, i, j):
         print('\nPath:')
         print('Path({}-->{}): '.format(i, j), end='')
-        self.print_path(i, j)
+        self.__print_path(i, j)
         print(' cost:', self.graph[i][j])
 
 if __name__ == '__main__':

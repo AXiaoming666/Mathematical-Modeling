@@ -6,18 +6,18 @@ class kruskal:
         self.rank = {}
         self.mst = []
 
-    def make_set(self, v):
+    def __make_set(self, v):
         self.parent[v] = v
         self.rank[v] = 0
 
-    def find(self, v):
+    def __find(self, v):
         if self.parent[v]!= v:
-            self.parent[v] = self.find(self.parent[v])
+            self.parent[v] = self.__find(self.parent[v])
         return self.parent[v]
 
-    def union(self, v1, v2):
-        root1 = self.find(v1)
-        root2 = self.find(v2)
+    def __union(self, v1, v2):
+        root1 = self.__find(v1)
+        root2 = self.__find(v2)
         if root1!= root2:
             if self.rank[root1] > self.rank[root2]:
                 self.parent[root2] = root1
@@ -28,13 +28,13 @@ class kruskal:
 
     def kruskal(self):
         for v in self.vertices:
-            self.make_set(v)
+            self.__make_set(v)
         self.edges.sort(key=lambda x: x[0])
         for edge in self.edges:
             weight, v1, v2 = edge
-            if self.find(v1)!= self.find(v2):
+            if self.__find(v1)!= self.__find(v2):
                 self.mst.append(edge)
-                self.union(v1, v2)
+                self.__union(v1, v2)
         return self.mst
     
 if __name__ == '__main__':

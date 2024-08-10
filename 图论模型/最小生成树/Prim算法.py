@@ -15,7 +15,7 @@ class Prim:
         self.adjacent_vertexs_edges = self.adjacent_dict[start]
         heapify(self.adjacent_vertexs_edges)  # 转化为小顶堆，便于找到权重最小的边
 
-    def prim_algorithm(self):
+    def prim(self):
         while self.adjacent_vertexs_edges:
             weight, v1, v2 = heappop(self.adjacent_vertexs_edges)  # 权重最小的边，并同时从堆中删除。
             if v2 not in self.visited:
@@ -42,4 +42,4 @@ if __name__ == '__main__':
              (11, 'F', 'G'),
              ]
     prim_obj = Prim(vertices, edges, start='D')
-    print(prim_obj.prim_algorithm())
+    print(prim_obj.prim())
