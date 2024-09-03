@@ -1,5 +1,4 @@
 from pmdarima import auto_arima
-# pmdarima目前与numpy最新版本不兼容，须将numpy降级至1.26.4
 
 class ARIMA_Model:
     def __init__(self, time_series_data):
@@ -12,7 +11,8 @@ class ARIMA_Model:
                                 start_q=1, max_q=3, 
                                 start_P=1, max_P=2, 
                                 start_Q=1, max_Q=2,
-                                max_d=2, max_D=1,
+                                start_d=1, max_d=1,
+                                start_D=1, max_D=2,
                                 # 这是季节性周期，如果有的话
                                 m=12,
                                 seasonal=False, 
