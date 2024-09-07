@@ -295,6 +295,64 @@ if __name__ == '__main__':
         objective = alpha * ((profit_best + profit_worst) / 2) / (((profit_best + profit_worst) / 2) + (profit_best - profit_worst)) - (1 - alpha) * (profit_best - profit_worst) / (((profit_best + profit_worst) / 2) + (profit_best - profit_worst))    # 目标函数
 
         return objective
+    
+    def riskprofit_func(solution):
+        risk, profit = 0, 0
+        for i in range(7):
+            all = (Y * solution[i]).sum(axis=1)    # 每种粮食总生产量
+            anticipate = (Y * X).sum(axis=1)    # 每种粮食预期销售量
+
+            anticipate_best = np.zeros(shape=(59))    # 每种粮食最优预期销售量
+            for j in range(59):
+                if j == 5 or j == 6:
+                    anticipate_best[j] = anticipate[j] * (1.1 ** (i + 1))
+                else:
+                    anticipate_best[j] = anticipate[j] * (1.05 ** (i + 1))
+            
+            anticipate_worst = np.zeros(shape=(59))    # 每种粮食最差预期销售量
+            for j in range(59):
+                if j == 5 or j == 6:
+                    anticipate_worst[j] = anticipate[j] * (1.05 ** (i + 1))
+                else:
+                    anticipate_worst[j] = anticipate[j] * (0.95 ** (i + 1))
+
+            normal_best = np.minimum(all, anticipate_best)    # 每种粮食正常出售的部分
+            normal_worst = np.minimum(all, anticipate_worst)    # 每种粮食正常出售的部分
+
+            price_best = np.zeros(shape=(59))
+            for j in range(59):
+                if 16 <= j < 55:
+                    price_best[j] = S[j] * (1.05 ** (i + 1))
+                elif 55 <= j < 58:
+                    price_best[j] = S[j] * (0.99 ** (i + 1))
+                elif j == 58:
+                    price_best[j] = S[j] * (0.95 ** (i + 1))
+                else:
+                    price_best[j] = S[j]
+            
+            price_worst = np.zeros(shape=(59))
+            for j in range(59):
+                if 16 <= j < 55:
+                    price_worst[j] = S[j] * (1.05 ** (i + 1))
+                elif 55 <= j < 59:
+                    price_worst[j] = S[j] * (0.95 ** (i + 1))
+                else:
+                    price_worst[j] = S[j]
+
+            cost = (C * solution[i]).sum() * (1.05 ** (i + 1))    # 总成本
+
+            income_best = ((normal_best + (all - normal_best) * 0.5) * price_best).sum()    # 最佳收益
+            income_worst = ((normal_worst + (all - normal_worst) * 0.5) * price_worst).sum()    # 最差收益
+
+            profit_best = income_best - cost    # 最佳利润
+            profit_worst = income_worst - cost    # 最差利润
+
+            profit += (profit_best + profit_worst) / 2
+            risk += profit_best - profit_worst
+        
+
+        return risk, profit
+
 
     # 禁忌表
     list_forbidden = [[i, j]for [i, j] in np.argwhere(X > 0)]    # 初始禁忌表为2023年种植情况
@@ -335,20 +393,17 @@ if __name__ == '__main__':
                             bean_flag[j] = 0
 
             # 实例化SA算法
-            sa = SimulatedAnnealing(T=300, cooling_rate=0.99, max_iter=10000, min_T=1e-6, obj_func=obj_func, list_forbidden=list_forbidden, bean_flag=bean_flag, year=i, alpha=alpha)
+            sa = SimulatedAnnealing(T=300, cooling_rate=0.99, max_iter=100, min_T=1e-6, obj_func=obj_func, list_forbidden=list_forbidden, bean_flag=bean_flag, year=i, alpha=alpha)
             best_solution[i] = sa.run()
 
             # 更新禁忌表
             list_forbidden = [[i, j] for [i, j] in np.argwhere((best_solution[i] == 1) | (best_solution[i] == 2))]    # 新禁忌表为当前解种植情况
 
         # 记录最优解函数值
-        best_func_value = 0
-        for i in range(7):
-            best_func_value += obj_func(best_solution[i], i, alpha)
-        record.append(best_func_value)
+        record.append(riskprofit_func(best_solution))
 
     # 绘出最优解与alpha之间的关系
-    plt.plot(np.linspace(0, 1, 11), record)
-    plt.xlabel('alpha')
-    plt.ylabel('best_func_value')
+    plt.plot(record)
+    plt.xlabel('risk')
+    plt.ylabel('profit')
     plt.show()
